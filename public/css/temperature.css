@@ -1,0 +1,22 @@
+h2.center {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 2px solid black; /* Make the lines black and bolder */
+}
+
+table th {
+    background-color: transparent; /* Remove the background color */
+}
+
+table thead th {
+    border-top: none; /* Remove the line above the first row and the header */
+}

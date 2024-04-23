@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+{% block title %}Hello TemperatureController!{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/temperature.css') }}">
+{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 1200px; width: 95%; font: 18px/1.5 sans-serif; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Température Quotidienne</h1>
+    <h2 class="center">{{ currentMonth |trans }} {{ currentYear }}</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Dimanche</th>
+            <th>Lundi</th>
+            <th>Mardi</th>
+            <th>Mercredi</th>
+            <th>Jeudi</th>
+            <th>Vendredi</th>
+            <th>Samedi</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set currentDay = 1 %}
+        {% set daysCount = 0 %}
+
+        {% for week in 1..5 %}
+            <tr>
+                {% for dayOfWeek in 0..6 %}
+                    {% if (week == 1 and dayOfWeek < firstDayOfWeek) or (daysCount >= daysInMonth) %}
+                        {# Cellule vide pour les jours avant le premier jour du mois et qprès le dernier jour du mois #}
+                        <td></td>
+                    {% else %}
+                        <td>
+                            {% if daysCount < daysInMonth %}
+                                {{ currentDay }}<br>
+                                {% set temperature = temperatureData|filter(item => item.day == currentDay)|first %}
+                                {% if temperature is defined %}
+                                    Max: {{ temperature.max }}<br>
+                                    Min: {{ temperature.min }}<br>
+                                    Avg: {{ temperature.avg }}
+                                {% else %}
+                                    No data
+                                {% endif %}
+                                {% set currentDay = currentDay + 1 %}
+                            {% endif %}
+                        </td>
+                        {% set daysCount = daysCount + 1 %}
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h1>Meilleur jour pour aller au festival d'été</h1>
+    {{ bestDayPeriod }} {{ currentMonth|trans }}
+
+    <h1>Moyenne par période de la journée</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>{{ 'morning'|trans }}</th>
+            <th>{{ 'afternoon'|trans }}</th>
+            <th>{{ 'evening'|trans }}</th>
+            <th>{{ 'night'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            {% for period, temperature in periodData %}
+                <td>{{ temperature }}</td>
+            {% endfor %}
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
